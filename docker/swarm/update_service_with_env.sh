@@ -2,15 +2,14 @@
 
 set -e
 
-if [ "$#" -ne 4 ]; then
-  echo "Expected format 'script <IP_ADDRESS> <ENV_FILE> <SERVICE_NAME> <IMAGE_URL>'"
+if [ "$#" -ne 3 ]; then
+  echo "Expected format 'script <ENV_FILE> <SERVICE_NAME> <IMAGE_URL>'"
   exit 1
 fi
 
-IP_ADDRESS="${1}"
-ENV_FILE="${2}"
-SERVICE_NAME="${3}"
-IMAGE_URL="${4}"
+ENV_FILE="${1}"
+SERVICE_NAME="${2}"
+IMAGE_URL="${3}"
 
 if [ ! -f "$ENV_FILE" ]; then
     echo "Environment file not found: $ENV_FILE"
