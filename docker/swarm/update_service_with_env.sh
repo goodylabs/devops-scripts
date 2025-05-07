@@ -19,9 +19,9 @@ fi
 
 export DOCKER_HOST="ssh://root@${IP_ADDRESS}"
 
-docker pull ${IMAGE_TAG_BRANCH}
+docker pull ${IMAGE_URL}
 
-docker_update_cmd="docker service update --image ${IMAGE_TAG_BRANCH}"
+docker_update_cmd="docker service update --image ${IMAGE_URL}"
 
 while IFS= read -r line; do
     if [[ $line == \#* ]]; then
