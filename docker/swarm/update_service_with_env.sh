@@ -17,8 +17,6 @@ if [ ! -f "$ENV_FILE" ]; then
     exit 1
 fi
 
-export DOCKER_HOST="ssh://root@${IP_ADDRESS}"
-
 docker pull ${IMAGE_URL}
 
 docker_update_cmd="docker service update --image ${IMAGE_URL}"
