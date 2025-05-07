@@ -9,7 +9,7 @@ fi
 
 SERVICE_NAME="${1}"
 
-STATUS=$(docker service inspect  | jq ".[0].UpdateStatus.State" -r)
+STATUS=$(docker service inspect ${SERVICE_NAME} | jq ".[0].UpdateStatus.State" -r)
 
 echo "status: ${STATUS}"
 
