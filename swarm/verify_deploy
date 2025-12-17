@@ -2,15 +2,14 @@
 
 set -e
 
-DOCKER_HOST="$1"
-STACK_NAME="$2"
+STACK_NAME="$1"
 
-if [ -z "$DOCKER_HOST" ] w|| [ -z "$STACK_NAME" ]; then
+if [ -z "$STACK_NAME" ]; then
     echo "Usage: $0 <DOCKER_HOST> <STACK_NAME>"
     exit 1
 fi
 
-export DOCKER_HOST="$DOCKER_HOST"
+echo "Connecting to DOCKER_HOST: $DOCKER_HOST"
 
 services=$(docker stack services "${STACK_NAME}" --format "{{.Name}}")
 
