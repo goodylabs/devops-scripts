@@ -35,17 +35,12 @@ for service in $services; do
 
         if [ $update_status = "completed" ]; then
             echo "Deployment completed successfully."
-            return 0
+            exit 0
         fi
 
         if [ $update_status = "---" ]; then
             echo "There was no deployment - only config change."
-            return 0
-        fi
-
-        if [ $update_status = "---" ]; then
-            echo "There was no deployment - only config change."
-            return 0
+            exit 0
         fi
 
         echo "######################"
