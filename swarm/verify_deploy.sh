@@ -63,5 +63,3 @@ for service in $services; do
     done
 
 done
-
-echo "$STACK_NAME deployment verification completed."
