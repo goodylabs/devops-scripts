@@ -1,10 +1,14 @@
 #!/bin/bash
 
-set -euo pipefail
+set -e
 
-export DOCKER_HOST="${DOCKER_HOST}"
+DOCKER_HOST="$1"
+STACK_NAME="$2"
 
-STACK_NAME="$1"
+if [ -z "$DOCKER_HOST" ] || [ -z "$STACK_NAME" ]; then
+    echo "Usage: $0 <DOCKER_HOST> <STACK_NAME>"
+    exit 1
+fi
 
 services=$(docker stack services "${STACK_NAME}" --format "{{.Name}}")
 
