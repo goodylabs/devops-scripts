@@ -4,7 +4,7 @@ set -e
 
 source ./devops/ci_cd_vars.sh
 
-export TRIVY_CACHE_DIR="/tmp/.trivy-cache-${uuidgen}"
+export TRIVY_CACHE_DIR="/tmp/.trivy-cache-$(uuidgen)"
 
 mkdir -p $TRIVY_CACHE_DIR
 
