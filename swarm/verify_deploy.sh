@@ -47,7 +47,11 @@ for service in $services; do
         echo "##  CONTAINER LOGS  ##"
         echo "######################"
 
-        docker service logs "${service}" --tail 50 || echo "Failed to get service logs"
+        failed_task_id=$(docker service ps "${service}" --filter "desired-state=shutdown" --format "{{.ID}}" | head -n 1)
+
+        echo "Looking for logs from task: ${failed_task_id}"
+
+        docker service logs "${service}" --tail 1000 | grep failed_task_id || echo "No failed_task_id found in logs"
 
         echo "####################"
         echo "##  HEALTHCHECKS  ##"
