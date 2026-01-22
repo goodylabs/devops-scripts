@@ -43,23 +43,12 @@ for service in $services; do
             break
         fi
 
-        failed_task_id=$(docker service ps "$service" --filter "desired-state=shutdown" --format "{{.ID}}" | head -n 1 || true)
+        failed_task_id=$(docker service ps digifirst_api --filter "desired-state=shutdown" --format json | head -n 1 | jq ".ID" -r)
 
-        if [ -n "$failed_task_id" ]; then
-            echo "Logs for failed task $failed_task_id"
-            docker logs "$failed_task_id" || echo "No logs available for task"
+        docker service logs digifirst_api -n 1000 2>&1 | grep "${failed_task_id}" || echo "could not found logs for task: ${failed_task_id}"
 
-            container_id=$(docker inspect --format '{{.Status.ContainerStatus.ContainerID}}' "$failed_task_id" 2>/dev/null || true)
-
-            if [ -n "$container_id" ]; then
-                docker inspect --format='{{range .State.Health.Log}}ExitCode: {{.ExitCode}}, Output: {{.Output}}{{"\n"}}{{end}}' "$container_id" \
-                || docker inspect --format='{{json .State.Health}}' "$container_id" | jq
-            else
-                echo "No container ID found for task"
-            fi
-        else
-            echo "No failed task detected"
-        fi
+        echo "Error: ${failed_task_id}"
+        docker service ps digifirst_api --filter "desired-state=shutdown" --format json --no-trunc | jq ".Error" -r
 
         if [ "$update_status" = "rollback_started" ] || [ "$update_status" = "rollback_completed" ]; then
             echo "Rollback detected for $service"
