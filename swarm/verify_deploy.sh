@@ -51,7 +51,7 @@ for service in $services; do
 
         echo "Looking for logs from task: ${failed_task_id}"
 
-        docker service logs "${service}" -n 1000 | grep failed_task_id || echo "No failed_task_id found in logs"
+        docker service logs "${service}" -n 1000 | grep "${failed_task_id}" || echo "No ${failed_task_id} found in logs"
 
         echo "####################"
         echo "##  HEALTHCHECKS  ##"
