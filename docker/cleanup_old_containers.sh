@@ -1,13 +1,24 @@
 #!/bin/bash
 set -e
 
-OLD_CONTAINERS=$(docker ps -a --filter "until=1h" --format "{{.ID}}")
+THRESHOLD=$(date -d "1 hour ago" +%s)
 
-if [ -n "$OLD_CONTAINERS" ]; then
-    echo "Found old containers. Cleaning up..."
-    docker rm -f $OLD_CONTAINERS
-else
-    echo "No containers older than 1h found. Skipping."
+CONTAINERS=$(docker ps -aq)
+
+if [ -z "$CONTAINERS" ]; then
+    echo "No containers to check"
+    exit 0
 fi
 
-#docker network prune -f --filter "until=1h"
+for ID in $CONTAINERS; do
+    CREATED=$(docker inspect -f '{{.Created}}' "$ID")
+    TS=$(date -d "${CREATED%.*}" +%s)
+
+    if [ "$TS" -lt "$THRESHOLD" ]; then
+        NAME=$(docker inspect -f '{{.Name}}' "$ID" | sed 's/\///')
+        echo "Deleting old container: $NAME ($ID)..."
+        docker rm -f "$ID"
+    fi
+done
+
+docker network prune -f --filter "until=1h" > /dev/null 2>&1 || true
