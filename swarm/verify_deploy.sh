@@ -1,8 +1,8 @@
 #!/bin/bash
 
-set -euo pipefail
+set -eo pipefail
 
-STACK_NAME="${1:-}"
+STACK_NAME=$1
 
 if [ -z "$STACK_NAME" ]; then
     echo "Usage: $0 <STACK_NAME>"
@@ -43,12 +43,12 @@ for service in $services; do
             break
         fi
 
-        failed_task_id=$(docker service ps digifirst_api --filter "desired-state=shutdown" --format json | head -n 1 | jq ".ID" -r)
+        failed_task_id=$(docker service ps "${service}" --filter "desired-state=shutdown" --format json | head -n 1 | jq ".ID" -r)
 
-        docker service logs digifirst_api -n 1000 2>&1 | grep "${failed_task_id}" || echo "could not found logs for task: ${failed_task_id}"
+        docker service logs "${service}" -n 1000 2>&1 | grep "${failed_task_id}" || echo "could not found logs for task: ${failed_task_id}"
 
         echo "Error: ${failed_task_id}"
-        docker service ps digifirst_api --filter "desired-state=shutdown" --format json --no-trunc | jq ".Error" -r
+        docker service ps "${service}" --filter "desired-state=shutdown" --format json --no-trunc | jq ".Error" -r
 
         if [ "$update_status" = "rollback_started" ] || [ "$update_status" = "rollback_completed" ]; then
             echo "Rollback detected for $service"
